@@ -4,7 +4,7 @@ const path = require('path');
 const isThere = require('is-there');
 const co = require('co');
 const mkdirp = require('mkdirp');
-const helper = require('./helper');
+const helper = require('./lib/helper');
 
 const del = require('del');
 const browserSync = require('browser-sync').create();
