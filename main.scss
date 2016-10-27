@@ -1,0 +1,20 @@
+@import "o-colors/main";
+@import "o-grid/main";
+@import "ftc-icons/main";
+
+@import "src/scss/colors";
+@import "src/scss/vars_mixins";
+
+@if $o-header-is-silent == false {
+	@import "src/scss/base";
+	@import "src/scss/edition-switcher";
+	@import "src/scss/masthead";
+	@import "src/scss/nav";
+	@import "src/scss/print";
+	@import "src/scss/search";
+	@import "src/scss/tools";
+
+	$o-header-is-silent: true;
+}
+
+

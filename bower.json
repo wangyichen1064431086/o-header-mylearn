@@ -1,0 +1,36 @@
+{
+  "name": "ftc-header",
+  "homepage": "https://github.com/FTChinese/ftc-header",
+  "authors": [
+    "neefrankie <neefrankie@gmail.com>"
+  ],
+  "description": "FTC Header Component",
+  "main": [
+    "main.scss",
+    "main.js"
+  ],
+  "moduleType": [
+    "es6"
+  ],
+  "keywords": [
+    "FTC",
+    "header"
+  ],
+  "scripts": {
+    "gulp": "./node_modules/gulp/bin/gulp.js",
+    "postversion": "git push && git push --tags"
+  },
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "demos"
+  ],
+  "dependencies": {
+    "ftc-logos": "^0.3.0",
+    "ftc-icons": "^3.3.0"
+  }
+}

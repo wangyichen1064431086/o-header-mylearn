@@ -1,0 +1,102 @@
+$o-header-is-silent:false;
+
+@import "../main.scss";
+@include oGridSurfaceCurrentLayout;
+
+body {
+	margin: 0;
+	padding: 0;
+	@include oColorsFor(page, background);
+	
+	height: 500vh;
+}
+
+.demo__content > div {
+	height: 300px;
+	position: relative;
+}
+.container-1 {
+	background-color: #d66d06;
+}
+.container-2 {
+	background-color: #eed485;
+}
+.container-3 {
+	background-color: #94826b;
+}
+.container-4 {
+	background-color: #936971;
+}
+
+.fixed-1 {
+	width: 200px;
+	height: 100px;
+	background-color: #27757b;
+	
+	&[aria-sticky=true] {
+		position: fixed;
+		top: 45px;
+	}
+	&[aria-troughed=true] {
+		position: absolute;
+		bottom: 0;
+	}
+}
+.fixed-2 {
+	width: 200px;
+	height: 100px;
+	background-color: #2e6e9e;
+	margin-left: 200px;
+	&[aria-sticky=true] {
+		position: fixed;
+		top: 45px;
+	}
+	&[aria-troughed=true] {
+		position: absolute;
+		bottom: 0;
+	}
+}
+.fixed-3 {
+	width: 200px;
+	height: 100px;
+	background-color: #b1493f;
+	margin-left: 400px;
+	&[aria-sticky=true] {
+		position: fixed;
+		top: 45px;
+	}
+	&[aria-troughed=true] {
+		position: absolute;
+		bottom: 0;
+	}
+}
+.fixed-4 {
+	width: 200px;
+	height: 100px;
+	background-color: #2bbbbf;
+	margin-left: 600px;
+	&[aria-sticky=true] {
+		position: fixed;
+		top: 45px;
+	}
+	&[aria-troughed=true] {
+		position: absolute;
+		bottom: 0;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
