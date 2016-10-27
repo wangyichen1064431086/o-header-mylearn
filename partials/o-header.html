@@ -1,0 +1,36 @@
+<header class="o-header" data-o-component="o-header" data-o-header--no-js>
+	{% if header.anon %}
+	<div class="o-header__row o-header__anon">
+		<ul class="o-header__anon-list">
+			<li class="o-header__anon-item">
+				<a href="o-header__anon-link" href="#">订阅</a>
+			</li>
+			<li class="o-header__anon-item">
+				<a href="o-header__anon-link">登录</a>
+			</li>	
+		</ul>
+	</div>
+	{% endif %}
+
+	{% if header.top %}
+		<div class="o-header__row o-header__top">
+			<div class="o-header__container">
+				<div class="o-header__top-wrapper">
+					
+				</div>
+			</div>
+		</div>
+	{% endif %}
+
+	{% if header.search %}
+
+	{% endif %}
+
+	{% if header.nav %}
+
+	{% endif %}
+</header>
+
+{% if header.drawer %}
+
+{% endif %}
