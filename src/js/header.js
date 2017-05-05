@@ -1,83 +1,67 @@
-const DomDelegate = require('dom-delegate');
+import search from './search';
+import mega from './mega';
+import drawer from './drawer';
+import subnav from './subnav';
+import sticky from './sticky';
 
-function Header(rootEl, config = {headerClassName: 'o-header'}) {
-	const oHeader = this;
+class Header {
+	constructor (headerEl) {
+		/**
+		 * @param headerEl:
+		 */
 
-	function init() {
+		//MARK:先处理参数，得到this.header为本html中属性data-o-component为"o-header"的元素
+		if (!headerEl) {
+			headerEl = document.querySelector('[data-o-component]="o-header"]');
+		} else if (typeof headerEl === 'string') {
+			headerEl = document.querySelector(headerEl);
+		}
+
+		if (headerEl.hasAttribute('data-o-header--js')) {
+			return;
+		}
+
+		this.headerEl = headerEl;
+
+		//MARK:使用该元素（即this.header）初始化其他几个子模块组件
+		search.init(this.headerEl);
+		mega.init(this.headerEl);
+		drawer.init(this.headerEl);
+		subnav.init(this.headerEl);
+		sticky.init(this.headerEl);
+
+		//MARK:处理该元素的属性设置，移除'data-o-header--no-js'属性，添加'data-o-header--js'属性
+		this.headerEl.removeAttribute('data-o-header--no-js');
+		this.headerEl.setAttribute('data-o-header--js', '');
+	}
+
+	static init (rootEl) {
+		/**
+		 * @param rootEl:TYPE HTMLElement or String, Eg：document.body
+		 */
 		if (!rootEl) {
 			rootEl = document.body;
-		} else if (!(rootEl instanceof HTMLElement)) {
+		}
+		if (!(rootEl instanceof HTMLELement)) {
 			rootEl = document.querySelector(rootEl);
 		}
 
-		const rootDelegate = new DomDelegate(rootEl);
+		// MARK:如果rootEl的属性data-o-component的值含有单词o-beader，则返回一个 new Header(rootEl)
+		if (/\bo-header\b/.test(rootEl.getAttribute('data-o-component'))) {
+			// KNOWLEDGE:\b 匹配单词边界；\B 匹配非单词边界
+			return new Header(rootEl);
+		}
 
-		oHeader.delegate = rootDelegate;
-		oHeader.rootEl = rootEl;
-
-		preventScroll();
-		toggle();
-		selected();
-	}
-
-	function selected() {
-		const selectAttribute = '[data-o-header-selectable]';
-		const selectableEls = oHeader.rootEl.querySelectorAll(selectAttribute);
-
-		oHeader.delegate.on('click', selectAttribute, (e, selectable) => {
-			for (let i = 0; i < selectableEls.length; i++) {
-				selectableEls[i].setAttribute('aria-selected', 'false');
+		// MARK: 如果本DOM中的具有属性'data-o-component = "o-header"'的元素el，还不具有属性'data-o-header--js'那么就返回一个new Header(el),这样就得到了一系列的new Header(el),然后过滤掉其中为undefined的new Header(el)
+		return [].map.call(rootEl.querySelectorAll('[data-o-component="o-header"]'), el => {
+			// KNOWLEDGE: 注意还可以像这样用call的写法来使用数组的map方法
+			if(!el.hasAttribute('data-o-header--js')) {
+				return new Header(el);
 			}
-			selectable.setAttribute('aria-selected', 'true');
+		}).filter((header) => {
+			return header !== undefined;
 		});
 	}
-
-	function preventScroll() {
-		const navToggle = oHeader.rootEl.querySelector('[data-o-header-togglable-nav]');
-// add class name on body when pressed.
-		const navOpenClass = config.headerClassName + '--nav-open';
-
-		if (navToggle) {
-			navToggle.addEventListener('click', function(e) {
-				document.documentElement.classList.toggle(navOpenClass);
-				document.body.classList.toggle(navOpenClass);
-			});
-		}
-	}
-
-	function toggle() {
-		const toggleAttribute = '[data-o-header-togglable]';
-
-		oHeader.delegate.on('click', toggleAttribute, (e, togglerEl) => {
-			const togglerElState = togglerEl.getAttribute('aria-pressed');
-			if (togglerElState === 'true') {
-				togglerEl.setAttribute('aria-pressed', 'false');
-			} else if (togglerElState === 'false' || !togglerElState) {
-				togglerEl.setAttribute('aria-pressed', 'true');
-			}
-		});
-	}
-	
-	init();
 }
 
-Header.init = function (el) {
-	const headerInstances = [];
-	if (!el) {
-		el =document.body;
-	} else if (!el instanceof HTMLElement) {
-		el = document.querySelector(el);
-	}
-
-	const headerElements = el.querySelectorAll('[data-o-component=o-header]');
-
-	for (let i = 0; i < headerElements.length; i++) {
-		if (!headerElements[i].hasAttribute('data-o-header--js')) {
-			headerInstances.push(new Header(headerElements[i]));
-		}
-	}
-
-	return headerInstances;
-}
-
-module.exports = Header;
+export default Header;

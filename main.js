@@ -1,11 +1,10 @@
-const oHeader = require('./src/js/header');
-const oMenu = require('./src/js/ajax-menu.js');
-const oSticky = require('./src/js/sticky');
-const oSwitcher = require('./src/js/switcher');
+import Header from './src/js/header';
 
-module.exports = {
-	header: oHeader,
-	menu: oMenu,
-	sticky: oSticky,
-	switcher: oSwitcher
+const constructAll = () => {
+	Header.init();
+	document.removeEventListener('o.DOMContentLoaded', constructAll);//QUEST:事件'o.DOMContentLoaded'是啥?是自定义的吗？
 };
+
+document.addEventListener('o.DOMContentLoaded', constructAll);
+
+export default Header;

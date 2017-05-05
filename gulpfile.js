@@ -1,4 +1,4 @@
-const promisify = require('promisify-node')
+const promisify = require('promisify-node');//Wraps Node modules, functions, and methods written in the Node-callback style to return Promises.
 const fs = promisify('fs');
 const path = require('path');
 const isThere = require('is-there');
