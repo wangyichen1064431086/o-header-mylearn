@@ -1,103 +1,27 @@
-.o-header {
-	padding: 0;
-	margin: 0;
-	border: 0;
-
-	@include oGridRespondTo(M) {
-		position: relative;
-		z-index: 1;
+@mixin oHeaderBase() {
+	.o-header {
+		@include oColorsFor('o-header', 'text' 'background');
 	}
 
-	@include oGridTargetIE8 {
-		position: relative;
-		z-index: 1;
+	.o-header__row {
+		border-bottom: 1px solid oColorsGetColorFor('o-header', 'border');
 	}
-}
 
-.o-header__nav-placeholder {
-	box-sizing: border-box;
-	border: 1px solid;
-	height: $o-header-bottom-height + 15px;
+	.o-header__container {
+		@include oGridContainer();
 
-	@include oGridRespondTo(M) {
-		height: $o-header-bottom-height + $o-header-sub-nav-height + 30px;
-	}
-}
-
-.o-header__primary, .o-header__secondary {
-	@include oColorsFor(o-header);
-}
-.o-header__primary {
-	display: none;
-	@include oGridRespondTo(M) {
-		display: block;
-	}
-	@include oGridTargetIE8 {
-		display: block;
-	}
-}
-.o-header__secondary {
-	@include oGridRespondTo($until: M) {
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		z-index: 1;
-		height: $o-header-bottom-height;
-	}
-	@include oGridRespondTo(M) {
-		position: relative;
-// add background placeholder for .nav-items. Move it out of normal flow.
+		&:before,
 		&:after {
 			content: '';
-			position: absolute;
-			left: 0;
-			right: 0;
-			height: $o-header-sub-nav-height;
-			transition: $o-header-height-transition;
-			@include oColorsFor(o-header-sub-nav, background);
+			display: table;
 		}
-		&[aria-sticky=true] {
-			position: fixed;
-			top: 0;
-			left: 0;
-			right: 0;
- 			&:after {
-				height: 0;
-			}
+
+		&:after {
+			clear: both;
 		}
 	}
-}
 
-.o-header__container {
-	position: relative;
-	box-sizing: border-box;
-	margin-left: auto;
-	margin-right: auto;
-	min-width: $o-grid-min-width;
-	max-width: $_o-grid-max-width;
-	padding-left: oGridGutter();
-	padding-right: oGridGutter();
-
-
-	@include oGridRespondTo(M) {
-		padding-left: oGridGutter(M);
-		padding-right: oGridGutter(M);
+	.o-header__visually-hidden {
+		@include oHeaderVisuallyHidden;
 	}
-
-	@include oGridTargetIE8 {
-		padding-left: oGridGutter($o-grid-fixed-layout);
-		padding-right: oGridGutter($o-grid-fixed-layout);
-		width: oGridGetMaxWidthForLayout($o-grid-fixed-layout, $grid-mode: 'fixed');
-	}
-}
-
-.o-header__top,
-.o-header__bottom {
-	position: relative;
-	box-sizing: border-box;
-	display: block;
-	min-width: 100%;
-	max-width: 100%;
-	width: 100%;
 }

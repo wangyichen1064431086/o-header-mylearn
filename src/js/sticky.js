@@ -1,61 +1,62 @@
-function Sticky(fixedEl, startDistance, endDistance) {
-	const oSticky = this;
-	const rAF = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame || window.oRequestAnimationFrame || function(callback){ window.setTimeout(callback, 1000/60) }
+import { debounce } from 'o-utils';
 
-
-	function init() {	
-		oSticky.lastPosition = -1;
-		if (!startDistance) {
-			startDistance = 0;
-		}
-		oSticky.start = startDistance;
-		oSticky.end = endDistance;
-		if (!(fixedEl instanceof HTMLElement)) {
-			fixedEl = document.querySelector(fixedEl);
-		}
-		oSticky.fixedEl = fixedEl;
+function init (headerEl) {
+	if (!headerEl.hasAttribute('data-o-header--sticky')) {
+		return;
 	}
 
-	function loop(){
-	    // Avoid calculations if not needed
-	    var scrollY = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+	let viewportOffset;
+	let lastScrollDepth;
+	let lastAnimationFrame;
 
-	    if (oSticky.lastPosition == scrollY) {
-	        rAF(loop);
-	        return false;
-	    } else {
-	    	oSticky.lastPosition = scrollY;
-	    }
+	function handleFrame () {
+		// sticky el will appear when scrolled down from page top to
+		// (arbitrarily) > half the viewport height
+		const scrollDepth = window.pageYOffset || window.scrollY;
+		const isActive = scrollDepth > viewportOffset;
 
-	    var abovePeak = oSticky.lastPosition < oSticky.start;
+		headerEl.classList.toggle('o-header--sticky-active', isActive);
 
-	    var underTrough = oSticky.lastPosition > oSticky.end;
+		// allow a little wiggling room so we don't get too hasty toggling up/down state
+		if (Math.abs(scrollDepth - lastScrollDepth) > 20) {
+			const isScrollingDown = lastScrollDepth < scrollDepth;
+			headerEl.classList.toggle('o-header--sticky-scroll-down', isActive && isScrollingDown);
+			headerEl.classList.toggle('o-header--sticky-scroll-up', isActive && !isScrollingDown);
+		}
 
-	    var between = !abovePeak && !underTrough;
-
-	    console.log('abovePeak: ' + abovePeak + ', between: ' + between + ', underTrough: ' + underTrough);
-
-	    //var withinRange = oSticky.end ? ((oSticky.lastPosition > oSticky.start) && (oSticky.lastPosition < oSticky.end)) : (oSticky.lastPosition > oSticky.start);
-
-	    var sticked = oSticky.fixedEl.getAttribute('aria-sticky');
-	    var troughed = oSticky.fixedEl.getAttribute('aria-troughed');
-
-	    if (between && !sticked) {
-	    	oSticky.fixedEl.setAttribute('aria-sticky', 'true');
-	    } else if (!between && sticked) {
-	    	oSticky.fixedEl.removeAttribute('aria-sticky');
-	    }
-
-	    if (underTrough && !troughed) {
-	    	oSticky.fixedEl.setAttribute('aria-troughed', 'true');
-	    } else if (!underTrough && troughed) {
-	    	oSticky.fixedEl.removeAttribute('aria-troughed');
-	    }
-
-	    rAF( loop );
+		lastScrollDepth = scrollDepth;
 	}
-	init();
-	loop();
-}
 
-module.exports = Sticky;
+	function startLoop () {
+		viewportOffset = window.innerHeight / 2;
+
+		lastAnimationFrame = window.requestAnimationFrame(() => {
+			handleFrame();
+			startLoop();
+		});
+	}
+
+	function stopLoop () {
+		lastAnimationFrame && window.cancelAnimationFrame(lastAnimationFrame);
+	}
+
+	function scrollStart () {
+		window.removeEventListener('scroll', scrollStart);
+		window.addEventListener('scroll', debouncedScrollEnd);
+		startLoop();
+	}
+
+	function scrollEnd () {
+		stopLoop();
+		window.removeEventListener('scroll', debouncedScrollEnd);
+		window.addEventListener('scroll', scrollStart);
+	}
+
+	const debouncedScrollEnd = debounce(scrollEnd, 300);
+
+	window.addEventListener('scroll', scrollStart);
+
+	handleFrame();
+};
+
+export default { init };
