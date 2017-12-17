@@ -23,8 +23,8 @@
 </head>
 
 <body>
-{% include "./header.html" %}
-
+{% block header %}
+{% endblock %}
 <script type="text/javascript" src="scripts/demo.js"></script>
 {% if embedded %}
 <script type="text/javascript" src="/api/resize-iframe.js"></script>

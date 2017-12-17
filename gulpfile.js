@@ -1,10 +1,11 @@
 const promisify = require('promisify-node');//Wraps Node modules, functions, and methods written in the Node-callback style to return Promises.
-const fs = promisify('fs');
+const fs = require('fs-jetpack');
+
 const path = require('path');
+const nunjucks = require('nunjucks');
+
 const isThere = require('is-there');
-const co = require('co');
 const mkdirp = require('mkdirp');
-const helper = require('./lib/helper');
 
 const del = require('del');
 const browserSync = require('browser-sync').create();
@@ -32,52 +33,80 @@ gulp.task('dev', function(done) {
   done();
 });
 
-gulp.task('html', () => {
-// determine whether include `/api/resize-iframe.js` listed in `ftc-components`.
-  var embedded = false;
 
-  return co(function *() {
-    const destDir = '.tmp';
-
-    if (!isThere(destDir)) {
-      mkdirp(destDir, (err) => {
-        if (err) console.log(err);
-      });
+/**********Nunjucks渲染环境配置：start*********/
+var env = new nunjucks.Environment(
+  new nunjucks.FileSystemLoader(
+    [
+      path.resolve(process.cwd(), 'demos/html')
+    ],
+    {
+      watch:false,
+      noCache: true
     }
-    if (process.env.NODE_ENV === 'prod') {
-      embedded = true;
-    }
-    const data = yield helper.readJson('demos/src/data.json');
-    
-    const origami = yield helper.readJson('origami.json');
+  ),
+  {autoescape: false}
+);
 
-    const demos = origami.demos;
-
-    const renderResults = yield Promise.all(demos.map(function(demo) {
-
-      const template = demo.template;
-      console.log(`Using template "${template}" for "${demo.name}"`);
-
-      const context = {
-        pageTitle: demo.name,
-        description: demo.description,
-        header: data,
-        embedded: embedded
-      };
-
-      return helper.render(template, context, demo.name);
-    }));
-
-    yield Promise.all(renderResults.map(result => {
-      const dest = `.tmp/${result.name}.html`;
-      return fs.writeFile(dest, result.content, 'utf8');
-    }));
-  })
-  .then(function(){
-    browserSync.reload('*.html');
-  }, function(err) {
-    console.error(err.stack);
+function render(template, context) {
+  return new Promise(function(resolve, reject) {
+    env.render(template, context, function(err, res) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(res);
+      }
+    });
   });
+}
+
+gulp.task('html', async () => {
+  var embedded = false;
+  const destDir = '.tmp';
+  if (process.env.NODE_ENV === 'prod') {
+    embedded = true;
+  }
+  const origami = await fs.readAsync('origami.json','json');
+  const demos = origami.demos;
+  console.log(demos);
+  
+  function renderOneView(demo) {
+    console.log(demo);
+    return new Promise (
+      async function (resolve, reject)  {
+         const template = demo.template;
+         const name = demo.name;
+         const dataPath = demo.data;
+         const dataForHeader = await fs.readAsync('demos/data/header.json','json');
+         const context = {
+            pageTitle: demo.name,
+            description: demo.description,
+            header: dataForHeader,
+            embedded: embedded
+         };
+         const renderResult = await render(template, context);
+         const destFile = path.resolve(destDir, `${name}.html`);
+         const result = {
+           renderResult,
+           destFile
+         };
+         resolve(result);
+      }
+    ).then(result => {
+      fs.writeAsync(result.destFile, result.renderResult);
+    }).catch(error => {
+
+    })
+  }
+
+  return Promise.all(demos.map((demo) => {
+    return renderOneView(demo);
+  })).then(() => {
+    browserSync.reload('*.html');
+  }).catch(error => {
+    console.log(error);
+  })
+  
 });
 
 gulp.task('styles', function styles() {

@@ -1,3 +1,6 @@
+{% extends "base.html" %}
+
+{% block header%}
 <header class="o-header" data-o-component="o-header" data-o-header--no-js>
 	{% if header.anon %}
 	<div class="o-header__row o-header__anon">
@@ -34,3 +37,5 @@
 {% if header.drawer %}
 
 {% endif %}
+
+{% endblock %}
