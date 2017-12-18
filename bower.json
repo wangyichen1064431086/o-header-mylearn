@@ -1,36 +1,17 @@
 {
   "name": "ftc-header",
-  "homepage": "https://github.com/FTChinese/ftc-header",
-  "authors": [
-    "neefrankie <neefrankie@gmail.com>"
-  ],
-  "description": "FTC Header Component",
+  "dependencies": {
+    "o-buttons": "^4.5.2",
+    "o-colors": "^3.3.2",
+    "o-grid": "^4.2.0",
+    "o-icons": ">=4.4.2 <6",
+    "o-typography": "^4.1.0",
+    "o-visual-effects": ">=0.1.0 < 2",
+    "o-toggle": "^1.0.0",
+    "o-utils": "^1.0.0"
+  },
   "main": [
     "main.scss",
     "main.js"
-  ],
-  "moduleType": [
-    "es6"
-  ],
-  "keywords": [
-    "FTC",
-    "header"
-  ],
-  "scripts": {
-    "gulp": "./node_modules/gulp/bin/gulp.js",
-    "postversion": "git push && git push --tags"
-  },
-  "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests",
-    "demos"
-  ],
-  "dependencies": {
-    "ftc-logos": "^0.3.0",
-    "ftc-icons": "^3.3.0"
-  }
+  ]
 }

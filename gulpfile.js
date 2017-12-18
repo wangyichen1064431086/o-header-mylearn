@@ -153,7 +153,7 @@ gulp.task('webpack', (done) => {
       hash: false,
       version: false
     }));
-    browserSync.reload('demo.js');
+    browserSync.reload('scripts/main.js');
     done();
   });
 });
@@ -162,7 +162,7 @@ gulp.task('clean', function() {
   return del(['.tmp/**']);
 });
 
-gulp.task('serve', gulp.parallel('html', 'styles', 'webpack', () => {
+gulp.task('serve', gulp.series('html', 'styles', 'webpack', () => {
   browserSync.init({
     server: {
       baseDir: ['.tmp'],
@@ -174,9 +174,10 @@ gulp.task('serve', gulp.parallel('html', 'styles', 'webpack', () => {
     }
   });
 
-  gulp.watch(['demos/src/*.{html,json}', 'partials/*.html'], gulp.parallel('html'));
+  gulp.watch(['demos/html/*.html', 'demos/data/*.json'], gulp.parallel('html'));
 
   gulp.watch('demos/src/*.scss',gulp.parallel('styles'));
+  gulp.watch('demos/src/*.js',gulp.parallel('webpack'));
 }));
 
 gulp.task('build', gulp.parallel('html', 'styles', 'webpack'));

@@ -1,6 +1,5 @@
-import oGrid from 'o-grid';
-
-const Header = require('../main');
+import oGrid from 'o-grid/main.js';
+import Header from '../../main.js';
 const oHeader = Header.header;
 const oSwitcher = Header.switcher
 const oSticky = Header.sticky;
