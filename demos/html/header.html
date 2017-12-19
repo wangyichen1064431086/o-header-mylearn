@@ -48,11 +48,75 @@
 	{% endif %}
 
 	{% if header.search %}
-
+  <!-- To support both core and enhanced, duplicating the search row is necessary to avoid it flashing in enhanced -->
+	<!-- Pick only one of the two <div> if you don't need to support both core and enhanced -->
+	<div id="o-header-search" class="o-header__row o-header__search o--if-no-js" role="search">
+		<div class="o-header__container">
+			<form class="o-header__search-form" action="/search" role="search" aria-label="Site search">
+				<label class="o-header__visually-hidden" for="o-header-search-term">Search the <abbr title="Financial Times">FT</abbr></label>
+				<input class="o-header__search-term" id="o-header-search-term" name="q" type="text" placeholder="Search the FT">
+				<button class="o-header__search-submit" type="submit">
+					Search
+				</button>
+			</form>
+		</div>
+	</div>
+	<div id="o-header-search-js" class="o-header__row o-header__search" role="search" data-o-header-search>
+		<div class="o-header__container">
+			<form class="o-header__search-form" action="/search" role="search" aria-label="Site search">
+				<label class="o-header__visually-hidden" for="o-header-search-term-js">Search the <abbr title="Financial Times">FT</abbr></label>
+				<input class="o-header__search-term" id="o-header-search-term-js" name="q" type="text" placeholder="Search the FT">
+				<button class="o-header__search-submit" type="submit">
+					Search
+				</button>
+				<button class="o-header__search-close o--if-js" type="button" aria-controls="o-header-search-js" title="Close search bar">
+					<span class="o-header__visually-hidden">Close</span>
+				</button>
+			</form>
+		</div>
+	</div>
 	{% endif %}
 
 	{% if header.nav %}
+	<nav id="o-header-nav-mobile" class="o-header__row o-header__nav o-header__nav--mobile" role="navigation" aria-label="Main navigation">
+		<ul class="o-header__nav-list">
+			{% if header.mobile %}
+			<li class="o-header__nav-item">
+				<a class="o-header__nav-link o-header__nav-link--primary" href="{{href}}" {% if header.selected %}aria-label="Current page" aria-selected="true"{% endif %}>{{header.name}}</a>
+			</li>
+			{% endif %}
+		</ul>
+	</nav>
 
+	<nav id="o-header-nav-desktop" class="o-header__row o-header__nav o-header__nav--desktop" role="navigation" aria-label="Main navigation">
+		<div class="o-header__container">
+			<ul class="o-header__nav-list o-header__nav-list--left">
+				{% if header.desktop %}
+				<li class="o-header__nav-item">
+					<a class="o-header__nav-link o-header__nav-link--primary" href="{{href}}" {% if header.selected %}aria-label="Current page" aria-selected="true"{% endif %} id="o-header-link-{{index}}" {% if header.hasMega %}aria-controls="o-header-mega-{{index}}"{% endif %}>{{ hader.name }}</a>
+				</li>
+				{% endif %}
+			</ul>
+			<ul class="o-header__nav-list o-header__nav-list--right">
+				{% if header.isSignedIn %}
+					<li class="o-header__nav-item">
+						<a class="o-header__nav-link o-header__nav-link--utility" href="https://markets.ft.com/data/portfolio/dashboard">Portfolio</a>
+					</li>
+					<li class="o-header__nav-item">
+						<a class="o-header__nav-link o-header__nav-link--utility" href="https://myaccount.ft.com/details/core/view">My Account</a>
+					</li>
+				{% endif %}
+				{% if  not header.isSignedIn %}
+					<li class="o-header__nav-item">
+						<a class="o-header__nav-link o-header__nav-link--utility" href="/login">Sign In</a>
+					</li>
+					<li class="o-header__nav-item">
+						<a class="o-header__nav-button" href="/products">Subscribe</a>
+					</li>
+				{% endif %}
+			</ul>
+		</div>
+	</nav>
 	{% endif %}
 </header>
 
