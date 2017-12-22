@@ -7,7 +7,7 @@ import sticky from './sticky';
 class Header {
 	constructor (headerEl) {
 		/**
-		 * @param headerEl:Type string或为空.Type string,Eg:'[data-o-component]="o-header"]'
+		 * @param headerEl:Type string或为空或为Element.Type string,Eg:'[data-o-component]="o-header"]'
 		 */
 
 		//MARK:先处理参数，得到this.header为本html中属性data-o-component为"o-header"的元素
@@ -17,7 +17,7 @@ class Header {
 			headerEl = document.querySelector(headerEl);
 		}
 
-		//MARK:如果headerEl含有属性'data-o-header--js'，则return
+		//MARK:如果headerEl含有属性'data-o-header--js'，则return,即表明已经添加了header相关的js不用在做以下任何工作了。
 		if (headerEl.hasAttribute('data-o-header--js')) {
 			return;
 		}
@@ -60,7 +60,7 @@ class Header {
 				return new Header(el);
 			}
 		}).filter((header) => {
-			return header !== undefined;//QUET:为什么会出现为undefined的new Header()呢？
+			return header !== undefined;//QUET:为什么会出现为undefined的new Header()呢？; ANSWER: 因为new Header(el)处理已经具有属性'data-ftc-header--js'的元素时，会直接return,那么这个new Header(el)的结果就是undefined
 		});
 	}
 }
